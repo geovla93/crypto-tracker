@@ -7,7 +7,12 @@
     "client",
     "server"
   ],
+  "scripts": {
+    "dev": "concurrently -n client,server -c yellow,magenta \"cd client && npm run dev\" \"cd server && npm run dev\""
+  },
   "devDependencies": {
-    "prettier": "^2.7.1"
+    "concurrently": "^7.4.0",
+    "prettier": "^2.7.1",
+    "wait-on": "^6.0.1"
   }
 }
