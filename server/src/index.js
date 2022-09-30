@@ -12,7 +12,9 @@ async function main() {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use(cors());
+  app.use(
+    cors({ origin: process.env.CLIENT_APP_URL, optionsSuccessStatus: 200 }),
+  );
   app.use(helmet());
   app.use(morgan('dev'));
   app.use('/coins', coinRoutes);
