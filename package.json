@@ -3,5 +3,11 @@
   "version": "1.0.0",
   "license": "MIT",
   "private": true,
-  "workspaces": ["client", "server"]
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "devDependencies": {
+    "prettier": "^2.7.1"
+  }
 }
