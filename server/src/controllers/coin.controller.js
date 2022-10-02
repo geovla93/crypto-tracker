@@ -2,11 +2,22 @@ import axios from 'axios';
 
 export async function getAllCoins(req, res) {
   try {
+    const { page } = req.query;
+    // Current page is 1 by default if not provided
+    const currentPage = page || 1;
+    // Maxiumum 50 coins per page
+    const perPage = 50;
+    // hasMore is true by default, if there are less than 50 coins, it will be false
+    let hasMore = true;
+
+    // First request to get the coins
     const response = await axios.get(
-      `${process.env.COIN_GECKO_API_URL}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false`,
+      `${process.env.COIN_GECKO_API_URL}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${perPage}&page=${currentPage}&sparkline=false`,
     );
-    const coins = response.data.map((coin) => ({
+    // Map the response to get only the necessary data
+    const coins = response.data.map((coin, index) => ({
       id: coin.id,
+      rank: index + 1 + (currentPage - 1) * perPage, // rank is calculated based on the page number and the index of the coin in the page. Not asked in the task but I thought it would be nice to have, so I added it. You can see it in the UI.
       name: coin.name,
       symbol: coin.symbol,
       currentPrice: coin.current_price,
@@ -15,7 +26,25 @@ export async function getAllCoins(req, res) {
       priceChangePercentage24h: coin.price_change_percentage_24h,
     }));
 
-    res.status(200).json(coins);
+    // If there are less than 50 coins, hasMore will be false
+    if (coins.length < 50) {
+      hasMore = false;
+      // If there are 50 coins, we need to make another request to check if there are more coins
+    } else {
+      const hasMoreResponse = await axios.get(
+        `${
+          process.env.COIN_GECKO_API_URL
+        }/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=${
+          currentPage + 1
+        }&sparkline=false`,
+      );
+      // If there are no coins in the next page, hasMore will be false
+      if (hasMoreResponse.data.length === 0) {
+        hasMore = false;
+      }
+    }
+
+    res.status(200).json({ coins, hasMore });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -25,14 +54,17 @@ export async function getAllCoins(req, res) {
 export async function getCoinById(req, res) {
   try {
     const { id } = req.params;
+    // Check if the id is valid
     if (typeof id !== 'string' || id.length === 0) {
       res.status(400).json({ message: 'Invalid id' });
       return;
     }
 
+    // Request to get the coin
     const response = await axios.get(
       `${process.env.COIN_GECKO_API_URL}/coins/${id}`,
     );
+    // Get the necessary data from the response
     const coin = {
       id: response.data.id,
       name: response.data.name,
