@@ -14,11 +14,12 @@
     "lint:server": "cd server && npm run lint",
     "test": "npm run test:client && npm run test:server",
     "test:client": "cd client && npm run test",
-    "test:server": "cd server && npm run test"
+    "test:server": "cd server && npm run test",
+    "build": "cd client && npm run build",
+    "start": "concurrently -n client,server -c yellow,magenta \"cd client && npm run start\" \"cd server && npm run start\""
   },
   "devDependencies": {
     "concurrently": "^7.4.0",
-    "prettier": "^2.7.1",
-    "wait-on": "^6.0.1"
+    "prettier": "^2.7.1"
   }
 }

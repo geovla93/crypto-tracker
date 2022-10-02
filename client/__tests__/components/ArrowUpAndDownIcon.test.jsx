@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import ArrowUpAndDownIcon from './ArrowUpAndDownIcon';
+import ArrowUpAndDownIcon from '../../src/components/ArrowUpAndDownIcon';
 
 describe('ArrowUpAndDownIcon', () => {
   it('renders successfully', () => {

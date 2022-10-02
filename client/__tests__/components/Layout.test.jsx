@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import Layout from './Layout';
+import Layout from '../../src/components/Layout';
 
 describe('Layout', () => {
   it('should render the Header and Footer components', () => {

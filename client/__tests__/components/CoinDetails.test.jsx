@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import CoinDetails from './CoinDetails';
+import CoinDetails from '../../src/components/CoinDetails';
 
 const mockCoin = {
   id: 'bitcoin',
