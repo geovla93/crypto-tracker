@@ -19,10 +19,11 @@ const SortBy = Object.freeze({
 });
 
 function CoinsList() {
+  const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState('');
   const [sortDirection, setSortDirection] = useState(SortDirection.ASC);
   const [sortedCoins, setSortedCoins] = useState([]);
-  const { data: coins, error, isLoading } = useCoins();
+  const { data, error, isLoading, isPreviousData } = useCoins(page);
 
   function sortCoins(sortByFilter) {
     if (sortByFilter !== sortBy) {
@@ -50,10 +51,10 @@ function CoinsList() {
   }
 
   useEffect(() => {
-    if (coins) {
-      setSortedCoins(coins);
+    if (data) {
+      setSortedCoins(data.coins);
     }
-  }, [coins]);
+  }, [data]);
 
   if (isLoading) {
     return (
@@ -68,67 +69,90 @@ function CoinsList() {
   }
 
   return (
-    <div className="relative overflow-x-auto">
-      <table className="w-full table-auto border-collapse border border-gray-800 text-right text-sm">
-        <thead className="bg-gray-700">
-          <tr>
-            <th scope="col" className="whitespace-nowrap py-2 px-4 text-left">
-              #
-            </th>
-            <th scope="col" className="whitespace-nowrap py-2 px-4 text-left">
-              <div className="flex items-center">
-                Name
-                <ArrowUpAndDownIcon
-                  className="cursor-pointer"
-                  onClick={() => sortCoins(SortBy.NAME)}
-                />
-              </div>
-            </th>
-            <th scope="col" className="whitespace-nowrap py-2 px-4">
-              <div className="flex items-center justify-end">
-                24h (%)
-                <ArrowUpAndDownIcon
-                  className="cursor-pointer"
-                  onClick={() => sortCoins(SortBy.PRICE_CHANGE)}
-                />
-              </div>
-            </th>
-            <th scope="col" className="whitespace-nowrap py-2 px-4">
-              <div className="flex items-center justify-end">
-                Price
-                <ArrowUpAndDownIcon
-                  className="cursor-pointer"
-                  onClick={() => sortCoins(SortBy.PRICE)}
-                />
-              </div>
-            </th>
-            <th scope="col" className="whitespace-nowrap py-2 px-4">
-              <div className="flex items-center justify-end">
-                24h (High)
-                <ArrowUpAndDownIcon
-                  className="cursor-pointer"
-                  onClick={() => sortCoins(SortBy.HIGH)}
-                />
-              </div>
-            </th>
-            <th scope="col" className="whitespace-nowrap py-2 px-4">
-              <div className="flex items-center justify-end">
-                24h (Low)
-                <ArrowUpAndDownIcon
-                  className="cursor-pointer"
-                  onClick={() => sortCoins(SortBy.LOW)}
-                />
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedCoins.map((coin, index) => (
-            <CoinDetails key={coin.id} coin={{ ...coin, rank: index + 1 }} />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <div className="relative overflow-x-auto">
+        <table className="w-full table-auto border-collapse border border-gray-800 text-right text-sm">
+          <thead className="bg-gray-700">
+            <tr>
+              <th scope="col" className="whitespace-nowrap py-2 px-4 text-left">
+                #
+              </th>
+              <th scope="col" className="whitespace-nowrap py-2 px-4 text-left">
+                <div className="flex items-center">
+                  Name
+                  <ArrowUpAndDownIcon
+                    className="cursor-pointer"
+                    onClick={() => sortCoins(SortBy.NAME)}
+                  />
+                </div>
+              </th>
+              <th scope="col" className="whitespace-nowrap py-2 px-4">
+                <div className="flex items-center justify-end">
+                  24h (%)
+                  <ArrowUpAndDownIcon
+                    className="cursor-pointer"
+                    onClick={() => sortCoins(SortBy.PRICE_CHANGE)}
+                  />
+                </div>
+              </th>
+              <th scope="col" className="whitespace-nowrap py-2 px-4">
+                <div className="flex items-center justify-end">
+                  Price
+                  <ArrowUpAndDownIcon
+                    className="cursor-pointer"
+                    onClick={() => sortCoins(SortBy.PRICE)}
+                  />
+                </div>
+              </th>
+              <th scope="col" className="whitespace-nowrap py-2 px-4">
+                <div className="flex items-center justify-end">
+                  24h (High)
+                  <ArrowUpAndDownIcon
+                    className="cursor-pointer"
+                    onClick={() => sortCoins(SortBy.HIGH)}
+                  />
+                </div>
+              </th>
+              <th scope="col" className="whitespace-nowrap py-2 px-4">
+                <div className="flex items-center justify-end">
+                  24h (Low)
+                  <ArrowUpAndDownIcon
+                    className="cursor-pointer"
+                    onClick={() => sortCoins(SortBy.LOW)}
+                  />
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedCoins.map((coin, index) => (
+              <CoinDetails key={coin.id} coin={coin} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-2 flex items-center justify-center space-x-3">
+        <button
+          className="w-28 rounded-md bg-gray-700 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() => setPage((prevValue) => Math.max(prevValue - 1, 1))}
+          disabled={page === 1}
+        >
+          Previous
+        </button>
+        <p className="rounded-md bg-gray-700 px-4 py-2 text-white">{page}</p>
+        <button
+          className="w-28 rounded-md bg-gray-700 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() => {
+            if (!isPreviousData && data.hasMore) {
+              setPage((prevValue) => prevValue + 1);
+            }
+          }}
+          disabled={isPreviousData || !data?.hasMore}
+        >
+          Next
+        </button>
+      </div>
+    </>
   );
 }
 
