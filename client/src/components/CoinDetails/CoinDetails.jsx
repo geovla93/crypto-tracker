@@ -23,7 +23,7 @@ function CoinDetails({ coin }) {
 
   return (
     <tr
-      className="group cursor-pointer border-b transition-colors even:bg-gray-50 hover:bg-gray-200"
+      className="group cursor-pointer border border-gray-700 transition-colors even:bg-gray-800 hover:bg-slate-800/80"
       onClick={redirectToCoin}
     >
       <th scope="row" className="whitespace-nowrap py-2 px-4 text-left">
@@ -32,7 +32,7 @@ function CoinDetails({ coin }) {
       <td className="whitespace-nowrap py-2 px-4 text-left">
         <div className="flex flex-col">
           <span className="font-bold">{name}</span>
-          <span className="uppercase text-gray-500">{symbol}</span>
+          <span className="uppercase text-gray-400">{symbol}</span>
         </div>
       </td>
 

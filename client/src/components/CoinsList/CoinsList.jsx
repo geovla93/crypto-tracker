@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import CoinDetails from '../CoinDetails';
-import useCoins from '../../hooks/useCoins';
 import ArrowUpAndDownIcon from '../ArrowUpAndDownIcon';
+import Spinner from '../Spinner';
+import useCoins from '../../hooks/useCoins';
 
 const SortDirection = Object.freeze({
   ASC: 'asc',
@@ -15,17 +16,19 @@ const SortBy = Object.freeze({
   NAME: 'name',
   HIGH: 'high24h',
   LOW: 'low24h',
-  RANK: 'rank',
 });
 
 function CoinsList() {
-  const [sortBy, setSortBy] = useState(SortBy.RANK);
+  const [sortBy, setSortBy] = useState('');
   const [sortDirection, setSortDirection] = useState(SortDirection.ASC);
   const [sortedCoins, setSortedCoins] = useState([]);
   const { data: coins, error, isLoading } = useCoins();
 
-  function sortCoins(sortBy) {
-    setSortBy(sortBy);
+  function sortCoins(sortByFilter) {
+    if (sortByFilter !== sortBy) {
+      setSortBy(sortByFilter);
+    }
+
     setSortDirection((prevValue) =>
       prevValue === SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC,
     );
@@ -35,10 +38,10 @@ function CoinsList() {
       const isAsc = sortDirection === SortDirection.ASC;
 
       return coins.sort((a, b) => {
-        if (a[sortBy] < b[sortBy]) {
+        if (a[sortByFilter] < b[sortByFilter]) {
           return isAsc ? -1 : 1;
         }
-        if (a[sortBy] > b[sortBy]) {
+        if (a[sortByFilter] > b[sortByFilter]) {
           return isAsc ? 1 : -1;
         }
         return 0;
@@ -48,14 +51,16 @@ function CoinsList() {
 
   useEffect(() => {
     if (coins) {
-      setSortedCoins(
-        coins.map((coin, index) => ({ ...coin, rank: index + 1 })),
-      );
+      setSortedCoins(coins);
     }
   }, [coins]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
   }
 
   if (error) {
@@ -64,17 +69,11 @@ function CoinsList() {
 
   return (
     <div className="relative overflow-x-auto">
-      <table className="w-full table-auto text-right text-sm">
-        <thead className="bg-gray-300">
+      <table className="w-full table-auto border-collapse border border-gray-800 text-right text-sm">
+        <thead className="bg-gray-700">
           <tr>
             <th scope="col" className="whitespace-nowrap py-2 px-4 text-left">
-              <div className="flex items-center">
-                #
-                <ArrowUpAndDownIcon
-                  className="cursor-pointer"
-                  onClick={() => sortCoins(SortBy.RANK)}
-                />
-              </div>
+              #
             </th>
             <th scope="col" className="whitespace-nowrap py-2 px-4 text-left">
               <div className="flex items-center">
@@ -86,7 +85,7 @@ function CoinsList() {
               </div>
             </th>
             <th scope="col" className="whitespace-nowrap py-2 px-4">
-              <div className="flex items-center">
+              <div className="flex items-center justify-end">
                 24h (%)
                 <ArrowUpAndDownIcon
                   className="cursor-pointer"
@@ -95,7 +94,7 @@ function CoinsList() {
               </div>
             </th>
             <th scope="col" className="whitespace-nowrap py-2 px-4">
-              <div className="flex items-center">
+              <div className="flex items-center justify-end">
                 Price
                 <ArrowUpAndDownIcon
                   className="cursor-pointer"
@@ -104,7 +103,7 @@ function CoinsList() {
               </div>
             </th>
             <th scope="col" className="whitespace-nowrap py-2 px-4">
-              <div className="flex items-center">
+              <div className="flex items-center justify-end">
                 24h (High)
                 <ArrowUpAndDownIcon
                   className="cursor-pointer"
@@ -113,7 +112,7 @@ function CoinsList() {
               </div>
             </th>
             <th scope="col" className="whitespace-nowrap py-2 px-4">
-              <div className="flex items-center">
+              <div className="flex items-center justify-end">
                 24h (Low)
                 <ArrowUpAndDownIcon
                   className="cursor-pointer"
@@ -125,7 +124,7 @@ function CoinsList() {
         </thead>
         <tbody>
           {sortedCoins.map((coin, index) => (
-            <CoinDetails key={coin.id} coin={coin} />
+            <CoinDetails key={coin.id} coin={{ ...coin, rank: index + 1 }} />
           ))}
         </tbody>
       </table>
