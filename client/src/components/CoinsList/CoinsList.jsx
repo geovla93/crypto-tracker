@@ -71,7 +71,7 @@ function CoinsList() {
   return (
     <>
       <div className="relative overflow-x-auto">
-        <table className="w-full table-auto border-collapse border border-gray-800 text-right text-sm">
+        <table className="mx-auto w-full max-w-4xl table-auto border-collapse border border-gray-800 text-right text-sm">
           <thead className="bg-gray-700">
             <tr>
               <th scope="col" className="whitespace-nowrap py-2 px-4 text-left">

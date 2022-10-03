@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .animate-underline {
+    @apply relative inline-block before:content-[''] before:absolute before:inline-block before:w-full before:h-[2px] before:bottom-0 before:left-0 before:bg-current before:hover:scale-x-100 before:scale-x-0 before:origin-top-left before:transition before:ease-in-out before:duration-300;
+  }
+}

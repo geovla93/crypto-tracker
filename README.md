@@ -4,6 +4,8 @@ This is a monorepo containing both the Express API and Next.js client.
 
 This app was created as an assignment for [Cyberscope](https://www.cyberscope.io/).
 
+Link to live server is [here](https://crypto-tracker-sepia-three.vercel.app/).
+
 ## How to use
 
 Clone the repository:

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import cn from 'classnames';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
@@ -17,21 +18,16 @@ function CoinDetails({ coin }) {
   } = coin;
   const isPriceDown = parseFloat(priceChangePercentage24h) < 0;
 
-  function redirectToCoin() {
-    router.push(`/${coin.id}`);
-  }
-
   return (
-    <tr
-      className="group cursor-pointer border border-gray-700 transition-colors even:bg-gray-800 hover:bg-slate-800/80"
-      onClick={redirectToCoin}
-    >
+    <tr className="group border border-gray-700 transition-colors even:bg-gray-800 hover:bg-slate-800/80">
       <th scope="row" className="whitespace-nowrap py-2 px-4 text-left">
         {rank}
       </th>
       <td className="whitespace-nowrap py-2 px-4 text-left">
-        <div className="flex flex-col">
-          <span className="font-bold">{name}</span>
+        <div className="flex flex-col items-start">
+          <Link href={`/${coin.id}`} className="animate-underline font-bold">
+            {name}
+          </Link>
           <span className="uppercase text-gray-400">{symbol}</span>
         </div>
       </td>
