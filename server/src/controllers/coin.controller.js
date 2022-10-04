@@ -4,7 +4,7 @@ export async function getAllCoins(req, res) {
   try {
     const { page } = req.query;
     // Current page is 1 by default if not provided
-    const currentPage = page || 1;
+    const currentPage = typeof page === 'string' ? parseInt(page, 10) : 1;
     // Maxiumum 50 coins per page
     const perPage = 50;
     // hasMore is true by default, if there are less than 50 coins, it will be false
@@ -34,7 +34,7 @@ export async function getAllCoins(req, res) {
       const hasMoreResponse = await axios.get(
         `${
           process.env.COIN_GECKO_API_URL
-        }/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=${
+        }/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${perPage}&page=${
           currentPage + 1
         }&sparkline=false`,
       );
