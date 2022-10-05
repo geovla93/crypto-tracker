@@ -1,5 +1,8 @@
+import { QueryClient, dehydrate } from '@tanstack/react-query';
+
 import CoinsList from '../components/CoinsList';
 import Layout from '../components/Layout';
+import { fetchCoins } from '../utils/api';
 
 function HomePage() {
   return (
@@ -21,3 +24,19 @@ function HomePage() {
 }
 
 export default HomePage;
+
+export async function getServerSideProps(ctx) {
+  ctx.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  );
+
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery(['coins', 'list', 1], () => fetchCoins(1));
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+}

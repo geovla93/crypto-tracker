@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import cn from 'classnames';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 
 import Layout from '../components/Layout';
 import PricePercentageDetails from '../components/PricePercentageDetails';
@@ -8,6 +9,7 @@ import PriceRange from '../components/PriceRange';
 import Spinner from '../components/Spinner';
 import useCoin from '../hooks/useCoin';
 import { numberWithCommas } from '../utils/transformations';
+import { fetchCoinDetails } from '../utils/api';
 
 function CoinDetailsPage() {
   const router = useRouter();
@@ -97,3 +99,23 @@ function CoinDetailsPage() {
 }
 
 export default CoinDetailsPage;
+
+export async function getServerSideProps(ctx) {
+  const { coinId } = ctx.params;
+
+  ctx.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  );
+
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery(['coins', 'details', coinId], () =>
+    fetchCoinDetails(coinId),
+  );
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+}
