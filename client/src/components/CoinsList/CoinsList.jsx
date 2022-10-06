@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import CoinDetails from '../CoinDetails';
 import ArrowUpAndDownIcon from '../ArrowUpAndDownIcon';
@@ -26,6 +26,7 @@ function CoinsList() {
   const [sortDirection, setSortDirection] = useState(SortDirection.ASC);
   const [sortedCoins, setSortedCoins] = useState([]);
   const { data, error, isLoading, isPreviousData } = useCoins(page);
+  const scrollRef = useRef();
 
   function sortCoins(sortByFilter) {
     if (sortByFilter !== sortBy) {
@@ -58,6 +59,13 @@ function CoinsList() {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (scrollRef && scrollRef.current && !isPreviousData) {
+      const position = scrollRef.current.getBoundingClientRect().top;
+      window.scrollTo(0, position + window.scrollY - 50);
+    }
+  }, [isPreviousData, page]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center">
@@ -72,7 +80,7 @@ function CoinsList() {
 
   return (
     <>
-      <div className="relative overflow-x-auto">
+      <div ref={scrollRef} className="relative overflow-x-auto">
         <Table className="mx-auto w-full max-w-4xl table-auto border-collapse border border-gray-800 text-right text-sm">
           <Table.Head className="bg-gray-700">
             <Table.Row>
