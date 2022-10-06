@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import CoinDetails from '../CoinDetails';
 import ArrowUpAndDownIcon from '../ArrowUpAndDownIcon';
 import Spinner from '../Spinner';
+import Table from '../Table';
+import Button from '../Button';
 import useCoins from '../../hooks/useCoins';
 
 const SortDirection = Object.freeze({
@@ -71,13 +73,13 @@ function CoinsList() {
   return (
     <>
       <div className="relative overflow-x-auto">
-        <table className="mx-auto w-full max-w-4xl table-auto border-collapse border border-gray-800 text-right text-sm">
-          <thead className="bg-gray-700">
-            <tr>
-              <th scope="col" className="whitespace-nowrap py-2 px-4 text-left">
+        <Table className="mx-auto w-full max-w-4xl table-auto border-collapse border border-gray-800 text-right text-sm">
+          <Table.Head className="bg-gray-700">
+            <Table.Row>
+              <Table.Header scope="col" className="text-left">
                 #
-              </th>
-              <th scope="col" className="whitespace-nowrap py-2 px-4 text-left">
+              </Table.Header>
+              <Table.Header scope="col" className="text-left">
                 <div className="flex items-center">
                   Name
                   <ArrowUpAndDownIcon
@@ -85,8 +87,8 @@ function CoinsList() {
                     onClick={() => sortCoins(SortBy.NAME)}
                   />
                 </div>
-              </th>
-              <th scope="col" className="whitespace-nowrap py-2 px-4">
+              </Table.Header>
+              <Table.Header scope="col">
                 <div className="flex items-center justify-end">
                   24h (%)
                   <ArrowUpAndDownIcon
@@ -94,8 +96,8 @@ function CoinsList() {
                     onClick={() => sortCoins(SortBy.PRICE_CHANGE)}
                   />
                 </div>
-              </th>
-              <th scope="col" className="whitespace-nowrap py-2 px-4">
+              </Table.Header>
+              <Table.Header scope="col">
                 <div className="flex items-center justify-end">
                   Price
                   <ArrowUpAndDownIcon
@@ -103,8 +105,8 @@ function CoinsList() {
                     onClick={() => sortCoins(SortBy.PRICE)}
                   />
                 </div>
-              </th>
-              <th scope="col" className="whitespace-nowrap py-2 px-4">
+              </Table.Header>
+              <Table.Header scope="col">
                 <div className="flex items-center justify-end">
                   24h (High)
                   <ArrowUpAndDownIcon
@@ -112,8 +114,8 @@ function CoinsList() {
                     onClick={() => sortCoins(SortBy.HIGH)}
                   />
                 </div>
-              </th>
-              <th scope="col" className="whitespace-nowrap py-2 px-4">
+              </Table.Header>
+              <Table.Header scope="col">
                 <div className="flex items-center justify-end">
                   24h (Low)
                   <ArrowUpAndDownIcon
@@ -121,27 +123,25 @@ function CoinsList() {
                     onClick={() => sortCoins(SortBy.LOW)}
                   />
                 </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+              </Table.Header>
+            </Table.Row>
+          </Table.Head>
+          <Table.Body>
             {sortedCoins.map((coin, index) => (
               <CoinDetails key={coin.id} coin={coin} />
             ))}
-          </tbody>
-        </table>
+          </Table.Body>
+        </Table>
       </div>
       <div className="mt-2 flex items-center justify-center space-x-3">
-        <button
-          className="w-28 rounded-md bg-gray-700 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+        <Button
           onClick={() => setPage((prevValue) => Math.max(prevValue - 1, 1))}
           disabled={page === 1}
         >
           Previous
-        </button>
+        </Button>
         <p className="rounded-md bg-gray-700 px-4 py-2 text-white">{page}</p>
-        <button
-          className="w-28 rounded-md bg-gray-700 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+        <Button
           onClick={() => {
             if (!isPreviousData && data.hasMore) {
               setPage((prevValue) => prevValue + 1);
@@ -150,7 +150,7 @@ function CoinsList() {
           disabled={isPreviousData || !data?.hasMore}
         >
           Next
-        </button>
+        </Button>
       </div>
     </>
   );

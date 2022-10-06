@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import cn from 'classnames';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 
+import Table from '../Table';
 import { numberWithCommas } from '../../utils/transformations';
 
 function CoinDetails({ coin }) {
@@ -19,20 +20,20 @@ function CoinDetails({ coin }) {
   const isPriceDown = parseFloat(priceChangePercentage24h) < 0;
 
   return (
-    <tr className="group border border-gray-700 transition-colors even:bg-gray-800 hover:bg-slate-800/80">
-      <th scope="row" className="whitespace-nowrap py-2 px-4 text-left">
+    <Table.Row className="group border border-gray-700 transition-colors even:bg-gray-800 hover:bg-slate-800/80">
+      <Table.Header scope="row" className="text-left">
         {rank}
-      </th>
-      <td className="whitespace-nowrap py-2 px-4 text-left">
+      </Table.Header>
+      <Table.Cell className="text-left">
         <div className="flex flex-col items-start">
           <Link href={`/${coin.id}`} className="animate-underline font-bold">
             {name}
           </Link>
           <span className="uppercase text-gray-400">{symbol}</span>
         </div>
-      </td>
+      </Table.Cell>
 
-      <td className="whitespace-nowrap py-2 px-4">
+      <Table.Cell>
         <div
           className={cn(
             'inline-flex w-full max-w-[80px] items-center justify-center space-x-1 rounded p-2',
@@ -52,17 +53,17 @@ function CoinDetails({ coin }) {
             {Math.abs(parseFloat(priceChangePercentage24h)).toFixed(2)}%
           </span>
         </div>
-      </td>
-      <td className="whitespace-nowrap py-2 px-4">
+      </Table.Cell>
+      <Table.Cell>
         ${numberWithCommas(parseFloat(currentPrice).toFixed(2))}
-      </td>
-      <td className="whitespace-nowrap py-2 px-4">
+      </Table.Cell>
+      <Table.Cell>
         ${numberWithCommas(parseFloat(high24h).toFixed(2))}
-      </td>
-      <td className="whitespace-nowrap py-2 px-4">
+      </Table.Cell>
+      <Table.Cell>
         ${numberWithCommas(parseFloat(low24h).toFixed(2))}
-      </td>
-    </tr>
+      </Table.Cell>
+    </Table.Row>
   );
 }
 
